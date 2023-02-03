@@ -8,10 +8,18 @@ from yolox.exp import OBBExp as MyExp
 class Exp(MyExp):
     def __init__(self):
         super().__init__()
+        # self.dataset_config = 'configs/datasets/prsz_location_det.yaml'
+        self.dataset_config = 'configs/datasets/prsz_location_det.yaml'
+        self.modules_config = "configs/modules/yoloxs_obb.yaml"
+        self.losses_config = "configs/losses/yolox_losses_obb.yaml"
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
-        self.max_epoch = 80
+        self.input_size = (1024, 1024)
+        self.test_size = (1024, 1024)
+        self.max_epoch = 2000
+        self.weight_decay = 5e-5
+        self.min_lr_ratio = 0.0001
         self.no_aug_epochs = 2
-        self.no_eval = True
+        self.no_eval = False
         self.mosaic_prob = 1.0
         self.copy_paste_prob = 1.0
         self.mixup_prob = 0.0
@@ -20,7 +28,7 @@ class Exp(MyExp):
         self.enable_debug = False
         # ignore images which exists horizontal labels, 
         # the rotated aug will not implement the classes by adding this item
-        self.aug_ignore = ['roundabout', 'storage-tank'] 
+        # self.aug_ignore = ['roundabout', 'storage-tank']
         # ignore images which has no labels, which ensure each train contains labels
         self.empty_ignore = True
         self.evaluate_cfg = dict(
