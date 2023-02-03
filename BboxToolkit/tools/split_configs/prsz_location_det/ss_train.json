@@ -1,0 +1,31 @@
+{
+    "nproc": 10,
+    "load_type": "dota",
+    "img_dirs": [
+        "D:/MyData/prsz/toy/images/"
+    ],
+    "ann_dirs": [
+        "D:/MyData/prsz/toy/annfiles/"
+    ],
+    "classes": null,
+    "prior_annfile": null,
+    "merge_type": "addition",
+    "sizes": [
+        5000
+    ],
+    "gaps": [
+        0
+    ],
+    "rates": [
+        1.0
+    ],
+    "img_rate_thr": 0.6,
+    "iof_thr": 0.7,
+    "no_padding": true,
+    "padding_value": [
+        104, 116, 124
+    ],
+    "filter_empty": true,
+    "save_dir": "D:/MyData/prsz/toy/result",
+    "save_ext": ".jpg"
+}

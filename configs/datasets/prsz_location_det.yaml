@@ -1,0 +1,7 @@
+#data_dir: 'D:/MyData/prsz/toy'
+data_dir: '/nas/projects/basic-ldk-test/prsz_toy'
+train_ann: 'result'
+val_ann: 'result'
+test_ann: 'result'
+num_classes: 2
+class_names: ['max', 'location']  # class names
