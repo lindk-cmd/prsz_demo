@@ -111,17 +111,19 @@ def main(exp, args):
         ckpt_file = os.path.join(file_name, "best_ckpt.pth")
     else:
         ckpt_file = args.ckpt
+
+    # 模型读取
     logger.info("loading checkpoint")
     # ckpt = torch.load(ckpt_file, map_location="cpu")
     ckpt = torch.load(ckpt_file, map_location=device)
     # load the model state dict
     model.load_state_dict(ckpt["model"], strict=True)
     logger.info("loaded checkpoint done.")
-
     if args.fuse:
         logger.info("\tFusing model...")
         model = fuse_model(model)
 
+    # 预测前进行初始化
     predictor = Predictor(
         model, 
         exp, 

@@ -50,6 +50,8 @@ def image_demo(predictor, vis_folder, path, current_time, save_result):
     for image_name in files:
         outputs, img_info = predictor.inference(image_name)
         # result_image = predictor.visual(outputs[0], img_info, predictor.confthre)
+
+        # 以下代码为图片预测结果可视化
         result_image = predictor.visual(outputs[0], img_info)
         if save_result:
             save_folder = os.path.join(
@@ -98,36 +100,31 @@ class Predictor(object):
         self.postprocess_cfg = exp.postprocess_cfg
         self.output_format = output_format
         self.preproc = ValTransform(legacy=legacy)
-        if trt_file is not None:
-            from torch2trt import TRTModule
-
-            model_trt = TRTModule()
-            model_trt.load_state_dict(torch.load(trt_file))
-
-            x = torch.ones(1, 3, exp.test_size[0], exp.test_size[1]).cuda()
-            self.model(x)
-            self.model = model_trt
 
     def inference(self, img):
         img_info = {"id": 0}
+
+        # 读取待预测图片
         if isinstance(img, str):
             img_info["file_name"] = os.path.basename(img)
             img = cv2.imread(img)
         else:
             img_info["file_name"] = None
 
+        # 存储图片信息
         height, width = img.shape[:2]
         img_info["height"] = height
         img_info["width"] = width
         img_info["raw_img"] = img
-
         ratio = min(self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1])
         img_info["ratio"] = ratio
 
+        # 图片预处理
         img, _ = self.preproc(img, None, self.test_size)
         img = torch.from_numpy(img).unsqueeze(0)
         img = img.float()
 
+        # 设置cpu或gpu推理
         if isinstance(self.device, str):
             device = torch.device(self.device)
         else:
@@ -144,11 +141,13 @@ class Predictor(object):
 
         with torch.no_grad():
             t0 = time.time()
+            # 模型推理:假设输出结果形状为[1,21504, 8], 第一维代表图片数，第二维代表预测框的数量，第三维8个值代表预测框中心的的x，y坐标、
+            # 预测框的宽与高以及旋转角度(根据8个预测值可换算出框的四个边角坐标)
             outputs = self.model(img)
-            if self.decoder is not None:
-                outputs = self.decoder(outputs, dtype=outputs.type())
+
+            # 后处理：outputs为模型推理结果，对outputs进行后处理
             outputs = self.postprocess_func(
-                outputs, self.num_classes, 
+                outputs, self.num_classes,  # num_classes为2，代表检测2个类别：一个为max线(用于判断试纸方向),另一个为试纸位置
                 **self.postprocess_cfg
             )
             logger.info("Infer time: {:.4f}s".format(time.time() - t0))

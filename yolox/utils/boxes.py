@@ -78,6 +78,7 @@ def postprocess(prediction, num_classes, conf_thre=0.7, nms_thre=0.45, class_agn
     return output
 
 
+# 模型后处理
 def obbpostprocess(prediction, num_classes, conf_thre=0.1, nms_thre=0.50, class_agnostic=False, **kwargs):
     outputs = [None for _ in range(len(prediction))]
     for i, pred in enumerate(prediction):

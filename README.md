@@ -39,3 +39,5 @@ python tools/demo.py -expn prsz_loaction_det -c YOLOX_outputs/prsz_loaction_det/
 --device:设置cpu或GPU推理
 --save_result：是否保存结果
 
+
+
